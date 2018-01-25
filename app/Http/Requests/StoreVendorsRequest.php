@@ -23,9 +23,35 @@ class StoreVendorsRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'name' => 'required|min:2',
-            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ];
+        switch($this->method())
+        {
+            case 'GET':
+            case 'DELETE':
+            case 'POST':
+            {
+                return [
+                    'name' => 'required|min:2',
+                    'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                ];
+            }
+            case 'PUT':
+            {
+                if(isset($this->logo)){
+                    return [
+                        'name' => 'required|min:2',
+                        'logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+                    ];
+                }
+
+                return [
+                    'name' => 'required|min:2',
+                ];
+
+            }
+            case 'PATCH':
+
+            default:break;
+        }
+
     }
 }

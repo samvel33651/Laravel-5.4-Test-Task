@@ -18,7 +18,7 @@ class CreateItemsTable extends Migration
             $table->increments('id');
             $table->integer('user_id');
             $table->string('item_name');
-            $table->integer('vendor');
+            $table->integer('vendor_id')->unsigned()->nullable();
             $table->string('serial_number');
             $table->integer('type_id')->unsigned()->nullable();
             $table->float('price', 8, 2);
@@ -31,7 +31,7 @@ class CreateItemsTable extends Migration
         });
         Schema::table('items', function (Blueprint $table) {
             $table->foreign('type_id')->references('id')->on('types')->onDelete('cascade');
-
+            $table->foreign('vendor_id')->references('id')->on('vendors')->onDelete('cascade');
         });
     }
 

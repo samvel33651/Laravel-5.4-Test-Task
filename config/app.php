@@ -163,7 +163,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-
+        Kyslik\ColumnSortable\ColumnSortableServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -233,5 +233,7 @@ return [
     | Items count for sideBar
     |
     */
-    "sideBarItemCount" => 3
+    'sideBarItemCount' => 3,
+
+    'paginationCount' => 5,
 ];

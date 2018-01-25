@@ -7,6 +7,8 @@ use App\Http\Requests\StoreItemsRequest;
 use App\Item;
 use App\Type;
 use Carbon;
+use View;
+
 class ItemsController extends Controller
 {
 
@@ -20,16 +22,24 @@ class ItemsController extends Controller
      * or the list of items created by the user.
      * @return view
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('view', Item::class);
 
         if (auth()->user()->isAdmin === 1) {
-            $items = Item::all();
+            $items = Item::sortable()->paginate(config('app.paginationCount'));
         } else{
-            $items = auth()->user()->items()->get();
+            $items = auth()->user()->items()->sortable()->paginate(config('app.paginationCount'));
         }
-        return view('layouts.items.index', compact('items'));
+        $isPost = false;
+
+        if($request->isMethod('post')){
+            $isPost = true;
+             echo View::make('layouts.items.entry' , compact('items', 'isPost'));
+            die();
+        }
+
+        return view('layouts.items.index', compact('items', 'isPost'));
     }
 
     /**
@@ -93,10 +103,13 @@ class ItemsController extends Controller
         $this->authorize('update', $item);
 
         $validatedData = $request->all();
-        $imageName = request()->item_name.auth()->user()->id . '.' . request()->photo->getClientOriginalExtension();
 
-        $validatedData['photo'] = $imageName;
-        request()->photo->move(public_path('/img/uploads/items'), $imageName);
+        if(isset($request->photo)){
+            $imageName = request()->item_name.auth()->user()->id . '.' . request()->photo->getClientOriginalExtension();
+
+            $validatedData['photo'] = $imageName;
+            request()->photo->move(public_path('/img/uploads/items'), $imageName);
+        }
 
         $item->update($validatedData);
 

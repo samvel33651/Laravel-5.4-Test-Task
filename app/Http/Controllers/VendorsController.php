@@ -83,9 +83,12 @@ class VendorsController extends Controller
         $validatedData =  $request->all();
         $validatedData['user_id'] = auth()->id();
 
-        $imageName = request()->name.auth()->user()->id.'.'.request()->logo->getClientOriginalExtension();
-        $validatedData['logo'] = $imageName;
-        request()->logo->move(public_path('/img/uploads/vendors'), $imageName);
+        if(isset($request->logo)){
+            $imageName = request()->name.auth()->user()->id.'.'.request()->logo->getClientOriginalExtension();
+            $validatedData['logo'] = $imageName;
+            request()->logo->move(public_path('/img/uploads/vendors'), $imageName);
+        }
+       
         $vendor->update($validatedData);
         return redirect()->route('vendors');
     }
@@ -100,6 +103,7 @@ class VendorsController extends Controller
     {
         $this->authorize('delete',$vendor);
         $vendor->delete();
+        $vendor->items()->delete();
         return redirect()->route('vendors');
     }
 }

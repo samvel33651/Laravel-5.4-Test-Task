@@ -3,7 +3,11 @@
 @section('content')
     <h2>Search Results for <strong>{{$keyword}}</strong></h2>
     <hr>
-    @foreach($items as $item)
+    <div class="row" id="itemsTable">
+        @include('layouts.items.entry', ['items' => $items, 'isPost'=> false])
+    </div>
+
+    {{--@foreach($items as $item)
 
         <div class="col-md-3">
             <div class="thumbnail">
@@ -65,6 +69,6 @@
                 <div class="space-ten"></div>
             </div>
         </div>
-    @endforeach
+    @endforeach--}}
 
 @endsection

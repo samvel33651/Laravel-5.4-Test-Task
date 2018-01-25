@@ -3,13 +3,17 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Kyslik\ColumnSortable\Sortable;
 
 class Type extends Model
 {
+    use Sortable;
     protected $fillable = [
         'name',
     ];
 
+    public $sortable = ['name'];
+    
     public $timestamps = false;
 
     /**

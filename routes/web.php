@@ -55,6 +55,7 @@ Route::group(['prefix' => 'vendors', 'middleware' => 'auth'], function () {
 
 Route::group(['prefix' => 'items', 'middleware' => 'auth'], function () {
     Route::get('/', 'ItemsController@index')->name('items');
+    Route::post('/', 'ItemsController@index');
     Route::get('/add', 'ItemsController@create');
     Route::post('/add', 'ItemsController@store');
     Route::get('/{item}/edit', 'ItemsController@edit');
@@ -63,5 +64,6 @@ Route::group(['prefix' => 'items', 'middleware' => 'auth'], function () {
 
 });
 
+Route::get( '/search', 'SearchController@search');
 Route::post( '/search', 'SearchController@search');
 

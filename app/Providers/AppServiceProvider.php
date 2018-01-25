@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use App\Item;
 use Auth;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -16,8 +17,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+
         view()->composer('layouts.sidebar', function($view){
             $view->with('items', Item::getSidebarData());
+        });
+
+        view()->composer('layouts.items', function($view){
+            $view->with('items', [null, false]);
         });
     }
 

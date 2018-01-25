@@ -19,9 +19,6 @@ class CreateTypesTable extends Migration
         });
 
         // Insert some stuff
-        DB::table('types')->insert([
-            [ 'name' => 'Phone',], ['name'=> 'Tablet'], ['name'=>'Laptop ']
-        ]);
     }
 
     /**

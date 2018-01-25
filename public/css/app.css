@@ -32,7 +32,14 @@ div.caption h4 {
 .item-content-block{
     padding:20px;
     border-top:2px solid #f6f6f2;
-    display:block;}
+    display:block;
+    max-width: 150px;
+}
+
+td {
+    vertical-align: middle;
+}
+
 .tags a{
     background-color:rgba(64, 66, 179, 0.64);
     padding:10px; color:#fff;
@@ -2875,10 +2882,20 @@ caption, th {
     margin-bottom: 22px
 }
 
+/*.imageContainer{
+    width: 250px;
+    height: 250px;
+}*/
+
+.imageContainer img {
+    width: 250px;
+    height: 250px;
+}
+
 .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
     padding: 8px;
     line-height: 1.6;
-    vertical-align: top;
+    vertical-align: middle;
     border-top: 1px solid #ddd
 }
 

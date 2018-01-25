@@ -3,22 +3,25 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Kyslik\ColumnSortable\Sortable;
 use App\User;
 use App\Type;
 use App\Vendor;
 
 class Item extends Model
 {
+    use Sortable;
     protected $fillable = [
-        'item_name', 'price', 'weight', 'vendor', 'type_id', 'serial_number', 'color', 'release_date', 'photo', 'tags'
+        'item_name', 'price', 'weight', 'vendor_id', 'type_id', 'serial_number', 'color', 'release_date', 'photo', 'tags'
     ];
+    public $sortable = ['id','item_name', 'price', 'vendor_id', 'type_id', 'weight', 'serial_number', 'color', 'release_date'];
 
     /**
      * Get the type of associated item.
      */
     public function type()
     {
-        return $this->belongsTo(Type::class, 'type_id');
+        return $this->belongsTo(Type::class);
     }
 
     /**
@@ -26,7 +29,7 @@ class Item extends Model
      */
     public function vendor()
     {
-        return $this->belongsTo(Vendor::class, 'vendor');
+        return $this->belongsTo(Vendor::class);
     }
 
     /**
@@ -42,20 +45,17 @@ class Item extends Model
      */
     public function scopeSearchByKeyword($query, $keyword)
     {
-        if (auth()->user()->isAdmin == 1) {
-            $query->where(function ($query) use ($keyword) {
-                $query->where("item_name", "LIKE", "%" . $keyword . "%")
-                    ->orWhere("price", "=", "%" . $keyword . "%")
-                    ->orWhere("color", "LIKE", "%" . $keyword . "%");
-            });
-        }else{
-            $query->where(function ($query) use ($keyword){
-                $query->where("item_name", "LIKE", "%" . $keyword . "%")
-                    ->orWhere("price",$keyword )
-                    ->orWhere("color", "LIKE", "%".$keyword."%");
-            })->where('user_id', auth()->user()->id);
+        $query->where(function ($query) use ($keyword) {
+            $query->where("item_name", "LIKE", "%" . $keyword . "%")
+                ->orWhere("price", "LIKE", "%" . $keyword . "%")
+                ->orWhere("color", "LIKE", "%" . $keyword . "%")
+                ->orWhere("weight", "LIKE", "%" . $keyword . "%");
+        })->orWhereHas('vendor', function($query) use ($keyword){
+            $query->where('name', 'like', '%'.$keyword.'%');
+        })->orWhereHas('type', function($query) use ($keyword){
+            $query->where('name', 'like', '%'.$keyword.'%');
+        });
 
-        }
     }
 
     /**
@@ -75,9 +75,9 @@ class Item extends Model
      */
     public static  function getSidebarData(){
         if(auth()->user()->isAdmin == 1){
-            return  Item::orderBy('id', 'desc')->take(config('sideBarItemCount'))->get();
+            return  Item::orderBy('id', 'desc')->take(config('app.sideBarItemCount'))->get();
         }
-        return  Item::orderBy('id', 'desc')->where('user_id', auth()->user()->id)->take(config('sideBarItemCount'))->get();
+        return  Item::orderBy('id', 'desc')->where('user_id', auth()->user()->id)->take(config('app.sideBarItemCount'))->get();
 
     }
 }

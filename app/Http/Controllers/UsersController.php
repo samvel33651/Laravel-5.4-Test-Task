@@ -91,7 +91,12 @@ class UsersController extends Controller
         return  redirect()->route('users');
     }
 
-    public function adminPanel(){
+    /*
+     * Admin page
+     */
+
+    public function adminPanel()
+    {
         $itemsCount = Item::count();
         $newItems = Item::orderBy('id', 'desc')->take(5)->get();
         $averageItemsPrice = Item::avg('price');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\Item;
+use View;
 class SearchController extends Controller
 {
     public function __construct()
@@ -25,9 +26,22 @@ class SearchController extends Controller
         request()->validate([
             'keyword' => 'required|min:3'
         ]);
-        $keyword= request('keyword');
 
-        $items = Item::SearchByKeyword($keyword)->get();
+        $keyword= request('keyword');
+        if(auth()->user()->isAdmin ===1){
+            $items = Item::SearchByKeyword($keyword)->sortable()->paginate(5);
+        }else{
+            $items = Item::SearchByKeyword($keyword)->where('user_id', auth()->id())->sortable()->paginate(5);
+        }
+
+        $isPost = false;
+
+        if($request->isMethod('post')){
+            $isPost = true;
+            echo View::make('layouts.items.entry' , compact('items', 'isPost'));
+            die();
+        }
+
         if(count($items) > 0){
             return view('layouts.search.results', compact('items', 'keyword'));
         }else{
